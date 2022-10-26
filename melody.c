@@ -313,6 +313,7 @@ void loop()
         myservo.write(90);
         tb.sendTelemetryString("Servo", "Terbuka");
         cetak(0,0,"SUHU PANAS");
+        setTone(3);
         pinMode(buzzer, INPUT_PULLUP);
         runLed(2, true);
 
