@@ -8,7 +8,7 @@
 #define WIFI_AP_NAME                  "Wokwi-GUEST"
 #define WIFI_PASSWORD                 ""
 #define THINGSBOARD_MQTT_SERVER       "thingsboard.cloud"
-#define THINGSBOARD_MQTT_ACESSTOKEN   "57X7AsK3aMwUQrY79j6t"
+#define THINGSBOARD_MQTT_ACESSTOKEN   ""
 #define SERIAL_DEBUG_BAUD    115200
 #define DHT_PIN 15
 #define TEMP_UPPER_THRESHOLD  30 // upper temperature threshold
