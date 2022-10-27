@@ -3,17 +3,24 @@
 #include "ThingsBoard.h"
 #include <LiquidCrystal_I2C.h>
 #include <ESP32Servo.h>
+#include "RTClib.h"
+#include <stdio.h>
+#include <stdlib.h>
+
 
 #define COUNT_OF(x) ((sizeof(x)/sizeof(0[x])) / ((size_t)(!(sizeof(x) % sizeof(0[x])))))
 #define WIFI_AP_NAME                  "Wokwi-GUEST"
 #define WIFI_PASSWORD                 ""
 #define THINGSBOARD_MQTT_SERVER       "thingsboard.cloud"
-#define THINGSBOARD_MQTT_ACESSTOKEN   ""
+#define THINGSBOARD_MQTT_ACESSTOKEN   "57X7AsK3aMwUQrY79j6t"
 #define SERIAL_DEBUG_BAUD    115200
 #define DHT_PIN 15
 #define TEMP_UPPER_THRESHOLD  30 // upper temperature threshold
 #define TEMP_LOWER_THRESHOLD  27 // lower temperature threshold
 #define PIR_PIN 13
+#define LDR 35
+#define RELAY_PIN 2
+
 int quant = 20;
 int led_passed = 0;  // Time passed after LED was turned ON, milliseconds.
 int send_passed = 0; // Time passed after temperature/humidity data was sent, milliseconds.
@@ -22,37 +29,63 @@ int current_led = 0; // LED number that is currenlty ON.
 float temperature = 0;
 float humidity = 0;
 
+/*RTC*/
+RTC_DS1307 rtc;
+int timeStart= 0;
+char* substring(char*, int, int);
+/*--------------*/
+
+/*RELAY*/
+void dWrite(int pin, int hilo){
+  digitalWrite(pin,hilo);
+  delay(600);
+}
+
+/*--------------/
+
+/*LDR*/
+const float GAMMA = 0.7;
+const float RL10 = 50;
+float getData()
+{
+  int analogValue = analogRead(LDR);
+  float voltage = analogValue / 4096. * 5;
+  float resistance = 2000 * voltage / (1 - voltage / 5);
+  float lux = pow(RL10 * 1e3 * pow(10, GAMMA) / resistance, (1 / GAMMA));
+  return lux;
+}
+/*--------------*/
 
 /*PIR ---jika ada orang tutup putaran keran*/
-int pirState =0;
+int pirState = 0;
 
 void checkMotion() {
-  if(digitalRead(PIR_PIN)==HIGH){    
-    if(pirState==LOW)
+  if (digitalRead(PIR_PIN) == HIGH) {
+    if (pirState == LOW)
     {
-      Serial.println("Tutup keran");
-      pirState =HIGH;
+      dWrite(RELAY_PIN, HIGH);
+      pirState = HIGH;
     }
   }
-  else{
-      if (pirState==HIGH){
-        Serial.println("Buka keran");
-        pirState=LOW;
-      }
+  else {
+    if (pirState == HIGH) {
+      dWrite(RELAY_PIN, LOW);
+      pirState = LOW;
     }
+  }
 }
 
 /*DHT*/
 DHTesp dht;
 /*---------------------/
 
-/*Motor*/
+  /*Motor*/
 Servo myservo;
 /*---------------------/
 
-/*LCD*/
+  /*LCD*/
 LiquidCrystal_I2C lcd(0x27, 20, 4);
-void cetak( int start, int en,String teks) {
+void cetak( int start, int en, String teks) {
   lcd.setCursor(start, en);
   lcd.print(teks);
 }
@@ -66,7 +99,7 @@ void lcd_tampil (float temp, float hum) {
   lcd.init();
   lcd.backlight();
   cetak(3, 0, "Papan Informasi");
-  cetak(3, 1, "KELOMPOK 3");
+  cetak(3, 1, "KELOMPOK 1");
   cetak(0, 2, "Suhu :");
   cetak(13, 2, temp);
   cetak(19, 2, "C");
@@ -76,7 +109,7 @@ void lcd_tampil (float temp, float hum) {
 }
 /*--------------------/
   /*LED*/
-const uint8_t leds_control[] = { 26, 33, 25 };
+const uint8_t leds_control[] = { 33 };
 // Initial period of LED cycling.
 int led_delay = 1000;
 // Period of sending a temperature/humidity data.
@@ -92,7 +125,7 @@ void runLed(int i, bool send) {
   /*-------Buzzer-----*/
 #define MAX_SIZE 30
 #define MIN_SIZE 3
-const int buzzer = 12;
+const int buzzer = 25;
 const int s[3] = {30, 30, 15};
 const int doremi[MAX_SIZE] = {
   0x00770076, 0x0086007F, 0x0093008D, 0x009B0096, 0x00A600A1,
@@ -245,7 +278,6 @@ void reconnect() {
 }
 
 /*--------------------*/
-
 void loop()
 {
   delay(quant);
@@ -294,10 +326,10 @@ void loop()
     Serial.print("Sending data... ");
     TempAndHumidity lastValues = dht.getTempAndHumidity();
     lcd_tampil (lastValues.temperature, lastValues.humidity);
-    if (isnan(lastValues.humidity) || isnan(lastValues.temperature)||isnan(temperature)) {
+    if (isnan(lastValues.humidity) || isnan(lastValues.temperature) || isnan(temperature)) {
       Serial.println("Failed to read from DHT sensor!");
       setTone(3);
-    } 
+    }
     else {
       temperature = lastValues.temperature;
       Serial.print("temperature: ");
@@ -309,34 +341,54 @@ void loop()
       tb.sendTelemetryFloat("humidity", humidity);
     }
     //float temperature = DHT_PIN.readTemperature();  // read temperature in Celsius
-      if (temperature >= TEMP_UPPER_THRESHOLD) {
-        myservo.write(90);
-        tb.sendTelemetryString("Servo", "Terbuka");
-        cetak(0,0,"SUHU PANAS");
-        setTone(3);
-        pinMode(buzzer, INPUT_PULLUP);
-        runLed(2, true);
+    if (temperature >= TEMP_UPPER_THRESHOLD) {
+      myservo.write(90);
+      tb.sendTelemetryString("Servo", "Terbuka");
+      //cetak(0, 0, "SUHU PANAS");
+      pinMode(buzzer, INPUT_PULLUP);
+      runLed(2, true);
 
-      } else if (temperature <= TEMP_LOWER_THRESHOLD) {
-        myservo.write(0);
-        tb.sendTelemetryString("Servo", "Terbuka");
-        cetak(0,0,"SUHU CUKUP");
-        setTone(2);
-        runLed(1, true);
-      }
-      else if (TEMP_LOWER_THRESHOLD <= temperature >= TEMP_UPPER_THRESHOLD) {
-        Serial.println("Turn the led on");
-        cetak(0,0,"SUHU RENDAH");
-        setTone(1);
-        runLed(0, true);
-      }
-    
+    } else if (temperature <= TEMP_LOWER_THRESHOLD) {
+      myservo.write(0);
+      tb.sendTelemetryString("Servo", "Terbuka");
+      //cetak(0, 0, "SUHU CUKUP");
+      setTone(2);
+      runLed(1, true);
+    }
+    else if (TEMP_LOWER_THRESHOLD <= temperature >= TEMP_UPPER_THRESHOLD) {
+      Serial.println("Turn the led on");
+      //cetak(0, 0, "SUHU RENDAH");
+      setTone(1);
+      runLed(0, true);
+    }
+
     // wait a 2 seconds between readings
     delay(2000);
     send_passed = 0;
   }
   tb.loop();
+  //lakukan penyiraman dengan menghitung waktu selama 15 detik saja
+  //jika sudah selesai maka relay akan otomatis melakukan penutupan keran atau saat ini
+  //hanya akan menghidupkan lampu
+  DateTime time = rtc.now();
+  int timeEnd = timer();
+  if((timeEnd==timeStart+15)||(60-timeStart+timeEnd==15)){
+    dWrite(RELAY_PIN, HIGH);
+  }
+  else{
+    dWrite(RELAY_PIN, LOW);
+  }
+  Serial.println(String("DateTime::TIMESTAMP_TIME:\t")+time.timestamp(DateTime::TIMESTAMP_TIME));
+  //write to text for the log
+  
 }
+
+int timer(){
+  DateTime timer = rtc.now();
+  return timer.second();
+}
+
+
 void InitWiFi()
 {
   Serial.println("Connecting to AP ...");
@@ -354,6 +406,22 @@ void setup() {
   WiFi.begin(WIFI_AP_NAME, WIFI_PASSWORD);
   InitWiFi();
 
+#ifndef ESP8266
+  while (!Serial); // wait for serial port to connect. Needed for native USB
+#endif
+
+  if (! rtc.begin()) {
+    Serial.println("RTC TIDAK TERBACA");
+    Serial.flush();
+    return;
+  }
+
+  if (! rtc.isrunning()) {
+    Serial.println("RTC is NOT running!");
+    rtc.adjust(DateTime(F(__DATE__), F(__TIME__)));//update rtc dari waktu komputer
+  }
+  timeStart = timer();
+  pinMode(RELAY_PIN, OUTPUT);
   pinMode(PIR_PIN, INPUT);
   for (size_t i = 0; i < COUNT_OF(leds_control); ++i) {
     pinMode(leds_control[i], OUTPUT);
@@ -369,7 +437,7 @@ void setup() {
   lcd.setCursor(2, 1);
   lcd.print("Suhu & Kelembaban");
   lcd.setCursor(3, 3);
-  lcd.print("Kelompok 3");
+  lcd.print("Kelompok 1");
   delay(3000);
   lcd.clear();
 
