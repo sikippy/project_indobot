@@ -1,25 +1,34 @@
+#if defined(ESP8266)
+#include <ESP8266WiFi.h>
+#elif defined(ESP32)
+#include <WiFi.h>  // WiFi control for ESP32
+#endif
 #include <DHTesp.h>         // DHT for ESP32 library
-#include <WiFi.h>           // WiFi control for ESP32
 #include "ThingsBoard.h"
 #include <LiquidCrystal_I2C.h>
 #include <ESP32Servo.h>
 #include "RTClib.h"
 #include <stdio.h>
 #include <stdlib.h>
-
+#include <esp_wifi.h>
+#include <Relay.h>
 
 #define COUNT_OF(x) ((sizeof(x)/sizeof(0[x])) / ((size_t)(!(sizeof(x) % sizeof(0[x])))))
 #define WIFI_AP_NAME                  "Wokwi-GUEST"
 #define WIFI_PASSWORD                 ""
 #define THINGSBOARD_MQTT_SERVER       "thingsboard.cloud"
-#define THINGSBOARD_MQTT_ACESSTOKEN   "57X7AsK3aMwUQrY79j6t"
+#define THINGSBOARD_MQTT_ACESSTOKEN   "eHRy6F4hnvUUGTlpdWlD"
 #define SERIAL_DEBUG_BAUD    115200
 #define DHT_PIN 15
 #define TEMP_UPPER_THRESHOLD  30 // upper temperature threshold
 #define TEMP_LOWER_THRESHOLD  27 // lower temperature threshold
+#define CHY_UPPER_THRESHOLD 30
+#define CHY_LOWER_THRESHOLD 10
 #define PIR_PIN 13
 #define LDR 35
 #define RELAY_PIN 2
+
+uint8_t newMACAddress[] = {0x32, 0xAE, 0xA4, 0x07, 0x0D, 0x12};
 
 int quant = 20;
 int led_passed = 0;  // Time passed after LED was turned ON, milliseconds.
@@ -36,6 +45,7 @@ char* substring(char*, int, int);
 /*--------------*/
 
 /*RELAY*/
+String statusPompa(int state) {return state==0?"Mati":"Hidup";}
 void dWrite(int pin, int hilo){
   digitalWrite(pin,hilo);
   delay(600);
@@ -46,7 +56,7 @@ void dWrite(int pin, int hilo){
 /*LDR*/
 const float GAMMA = 0.7;
 const float RL10 = 50;
-float getData()
+float getIntCahaya()
 {
   int analogValue = analogRead(LDR);
   float voltage = analogValue / 4096. * 5;
@@ -90,22 +100,17 @@ void cetak( int start, int en, String teks) {
   lcd.print(teks);
 }
 
-void cetak( int start, int en, float value) {
-  lcd.setCursor(start, en);
-  lcd.print(value);
-}
-
-void lcd_tampil (float temp, float hum) {
+void lcd_tampil (float temp, float hum, float lux) {
   lcd.init();
   lcd.backlight();
-  cetak(3, 0, "Papan Informasi");
-  cetak(3, 1, "KELOMPOK 1");
-  cetak(0, 2, "Suhu :");
-  cetak(13, 2, temp);
-  cetak(19, 2, "C");
-  cetak(0, 3, "Kelembaban");
-  cetak(13, 3, hum);
-  cetak(19, 3, "%");
+  cetak(0, 0, "Cahaya :");
+  cetak(13, 0 ,String(lux));
+  cetak(0, 1, "Suhu :");
+  cetak(13, 1, String(temp));
+  cetak(19, 1, "C");
+  cetak(0, 2, "Kelembaban :");
+  cetak(13, 2, String(hum));
+  cetak(19, 2, "%");
 }
 /*--------------------/
   /*LED*/
@@ -147,7 +152,7 @@ const int tone_alarm[MAX_SIZE] = { 6645, 6645, 6645, 4186, 5588, 4186, 6645, 418
 
 int arrAtr[3][4] = {{20000, 0, 500, 30},
   {10000, 0, 200, 30},
-  {1000, 0, 500, 15}
+  {100, 0, 200, 15}
 };
 
 struct Node *head;
@@ -280,11 +285,12 @@ void reconnect() {
 /*--------------------*/
 void loop()
 {
-  delay(quant);
-  led_passed += quant;
-  send_passed += quant;
-
+  // delay(quant);
+  // led_passed += quant;
+  // send_passed += quant;
+ Relay relay(RELAY_PIN, LOW);
   checkMotion();
+  float lux=getIntCahaya();
   // Reconnect to WiFi, if needed
   if (WiFi.status() != WL_CONNECTED) {
     reconnect();
@@ -321,52 +327,44 @@ void loop()
   }
 
   // Check if it is a time to send DHT22 temperature and humidity
-  if (send_passed > send_delay) {
-    Serial.println();
+  //if (send_passed > send_delay) {
     Serial.print("Sending data... ");
     TempAndHumidity lastValues = dht.getTempAndHumidity();
-    lcd_tampil (lastValues.temperature, lastValues.humidity);
+    lcd_tampil (lastValues.temperature, lastValues.humidity,lux);
     if (isnan(lastValues.humidity) || isnan(lastValues.temperature) || isnan(temperature)) {
       Serial.println("Failed to read from DHT sensor!");
       setTone(3);
     }
     else {
       temperature = lastValues.temperature;
-      Serial.print("temperature: ");
-      Serial.print(temperature);
       humidity = lastValues.humidity;
-      Serial.print(" humidity: ");
-      Serial.print(humidity);
       tb.sendTelemetryFloat("temperature", temperature);
       tb.sendTelemetryFloat("humidity", humidity);
     }
+    tb.sendTelemetryFloat("cahaya",lux);
     //float temperature = DHT_PIN.readTemperature();  // read temperature in Celsius
-    if (temperature >= TEMP_UPPER_THRESHOLD) {
-      myservo.write(90);
-      tb.sendTelemetryString("Servo", "Terbuka");
-      //cetak(0, 0, "SUHU PANAS");
-      pinMode(buzzer, INPUT_PULLUP);
+    if (temperature >= TEMP_UPPER_THRESHOLD||lux > CHY_UPPER_THRESHOLD) {
+      setTone(3);
+      dWrite(RELAY_PIN, HIGH);
       runLed(2, true);
 
-    } else if (temperature <= TEMP_LOWER_THRESHOLD) {
-      myservo.write(0);
-      tb.sendTelemetryString("Servo", "Terbuka");
-      //cetak(0, 0, "SUHU CUKUP");
+    } else if (temperature <= TEMP_LOWER_THRESHOLD||CHY_LOWER_THRESHOLD<lux) {
       setTone(2);
+      dWrite(RELAY_PIN, HIGH);
       runLed(1, true);
     }
     else if (TEMP_LOWER_THRESHOLD <= temperature >= TEMP_UPPER_THRESHOLD) {
-      Serial.println("Turn the led on");
-      //cetak(0, 0, "SUHU RENDAH");
       setTone(1);
+      dWrite(RELAY_PIN, LOW);
       runLed(0, true);
     }
 
+   
     // wait a 2 seconds between readings
     delay(2000);
-    send_passed = 0;
-  }
-  tb.loop();
+   // send_passed = 0;
+  //}
+  
   //lakukan penyiraman dengan menghitung waktu selama 15 detik saja
   //jika sudah selesai maka relay akan otomatis melakukan penutupan keran atau saat ini
   //hanya akan menghidupkan lampu
@@ -379,8 +377,12 @@ void loop()
     dWrite(RELAY_PIN, LOW);
   }
   Serial.println(String("DateTime::TIMESTAMP_TIME:\t")+time.timestamp(DateTime::TIMESTAMP_TIME));
+   
+   cetak(0, 3, "Pompa :");
+   cetak(13, 3, String(statusPompa(digitalRead(RELAY_PIN))));
+
   //write to text for the log
-  
+  tb.loop();
 }
 
 int timer(){
@@ -406,20 +408,16 @@ void setup() {
   WiFi.begin(WIFI_AP_NAME, WIFI_PASSWORD);
   InitWiFi();
 
-#ifndef ESP8266
-  while (!Serial); // wait for serial port to connect. Needed for native USB
-#endif
-
   if (! rtc.begin()) {
     Serial.println("RTC TIDAK TERBACA");
-    Serial.flush();
-    return;
+    while (1);
   }
 
   if (! rtc.isrunning()) {
     Serial.println("RTC is NOT running!");
     rtc.adjust(DateTime(F(__DATE__), F(__TIME__)));//update rtc dari waktu komputer
   }
+  esp_wifi_set_mac(WIFI_IF_STA, &newMACAddress[0]);
   timeStart = timer();
   pinMode(RELAY_PIN, OUTPUT);
   pinMode(PIR_PIN, INPUT);
@@ -432,12 +430,9 @@ void setup() {
 
   lcd.init();
   lcd.backlight();
-  lcd.setCursor(3, 0);
-  lcd.print("Papan Informasi");
-  lcd.setCursor(2, 1);
-  lcd.print("Suhu & Kelembaban");
-  lcd.setCursor(3, 3);
-  lcd.print("Kelompok 1");
+  cetak(3,0,"Papan Informasi");
+  cetak(2, 1,"Suhu & Kelembaban");
+  cetak(3, 3,"Kelompok 1");
   delay(3000);
   lcd.clear();
 
