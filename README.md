@@ -10,7 +10,7 @@ Diana Catur     : https://wokwi.com/projects/346550144303366738 <br/>
 Dwi Mayasari    : prototipe <br/>
 Herni Bunga     : https://thingsboard.cloud/deviceGroups/e38b8c10-54c4-11ed-8ab1-ebe8b1422014 <br/>
 Laras Istiqomah : Slide dan Presentasi https://docs.google.com/presentation/d/1nJLA6wzpvZaa4lZ03OP1LcB2QiDQK0eB/edit?usp=sharing&ouid=116947196870439495696&rtpof=true&sd=true <br/>
-Vina P.         : https://wokwi.com/projects/346501431045390930 <br/>
+Vina P.         : https://wokwi.com/projects/346501431045390930 <br/>https://wokwi.com/projects/346768870801932883
                   
 
 Pengetahuan tentang anggrek <br/>
@@ -41,6 +41,6 @@ Sensor output yang digunakan : <br/>
 1. RTC untuk menghitung waktu real time saat eksekusi proses. <br/>
 2. Relay untuk mengendalikan arus listrik yang mengalir, bisa digunakan juga untuk menyalakan dan mematikan lampu.<br/>
 3. Buzzer untuk menghasilkan bunyi berdasarkan proses.<br/>
-4. LED untuk memberikan informasi proses, warning akan menghidupkan LED <br/> https://wokwi.com/projects/346768870801932883
+4. LED untuk memberikan informasi proses, warning akan menghidupkan LED <br/> 
 
 
