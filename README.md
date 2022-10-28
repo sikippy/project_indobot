@@ -41,6 +41,6 @@ Sensor output yang digunakan : <br/>
 1. RTC untuk menghitung waktu real time saat eksekusi proses. <br/>
 2. Relay untuk mengendalikan arus listrik yang mengalir, bisa digunakan juga untuk menyalakan dan mematikan lampu.<br/>
 3. Buzzer untuk menghasilkan bunyi berdasarkan proses.<br/>
-4. LED untuk memberikan informasi proses, warning akan menghidupkan LED <br/>
+4. LED untuk memberikan informasi proses, warning akan menghidupkan LED <br/> https://wokwi.com/projects/346768870801932883
 
 
