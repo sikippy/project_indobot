@@ -15,7 +15,7 @@ Vina P.         : https://wokwi.com/projects/346501431045390930
 Pengetahuan tentang anggrek <br/>
 
 1. pilih media tanam yang cocok <br/>
-2.  tidak di tempatkan di sinar matahari langsung <br/>
+2. tidak di tempatkan di sinar matahari langsung <br/>
 3. warna daun memberikan informasi jika menggelap butuh lebih banyak cahaya.<br/>
 4. penyiraman di suhu ruangan. <br/>
 5. siram selama 15 detik <br/>
@@ -37,7 +37,7 @@ Sensor input yang digunakan : <br/>
 4. Push button untuk manual jika terjadi kesalahan pada pengoperasian otomatis. <br/>
 
 Sensor output yang digunakan : <br/>
-1. RTC untuk menghitung waktu real time saat eksekusi proses.<br/>
+1. RTC untuk menghitung waktu real time saat eksekusi proses. <br/>
 2. Relay untuk mengendalikan arus listrik yang mengalir, bisa digunakan juga untuk menyalakan dan mematikan lampu.<br/>
 3. Buzzer untuk menghasilkan bunyi berdasarkan proses.<br/>
 4. LED untuk memberikan informasi proses, warning akan menghidupkan LED <br/>
