@@ -1,0 +1,204 @@
+{
+  "version": 1,
+  "author": "Vina Panduwinata",
+  "editor": "wokwi",
+  "parts": [
+    { "type": "wokwi-esp32-devkit-v1", "id": "esp", "top": -543.57, "left": 42.6, "attrs": {} },
+    {
+      "type": "wokwi-dht22",
+      "id": "dht1",
+      "top": -548.34,
+      "left": 384.37,
+      "attrs": { "temperature": "16.7", "humidity": "70" }
+    },
+    {
+      "type": "wokwi-led",
+      "id": "led3",
+      "top": -598.34,
+      "left": -15.81,
+      "attrs": { "color": "red" }
+    },
+    {
+      "type": "wokwi-resistor",
+      "id": "r3",
+      "top": -510.07,
+      "left": -21.12,
+      "rotate": 90,
+      "attrs": { "value": "1000" }
+    },
+    {
+      "type": "wokwi-lcd2004",
+      "id": "lcd1",
+      "top": -292.56,
+      "left": 266.53,
+      "attrs": { "pins": "i2c" }
+    },
+    {
+      "type": "wokwi-buzzer",
+      "id": "bz1",
+      "top": -581.8,
+      "left": -168.97,
+      "attrs": { "volume": "0.1" }
+    },
+    {
+      "type": "wokwi-pir-motion-sensor",
+      "id": "pir1",
+      "top": -206.38,
+      "left": -77.85,
+      "attrs": {}
+    },
+    {
+      "type": "wokwi-pushbutton",
+      "id": "btn1",
+      "top": -315.71,
+      "left": -212.7,
+      "attrs": { "color": "red" }
+    },
+    {
+      "type": "wokwi-pushbutton",
+      "id": "btn2",
+      "top": -248.89,
+      "left": -213.92,
+      "attrs": { "color": "yellow" }
+    },
+    {
+      "type": "wokwi-pushbutton",
+      "id": "btn3",
+      "top": -184.5,
+      "left": -213.91,
+      "attrs": { "color": "green" }
+    },
+    {
+      "type": "wokwi-resistor",
+      "id": "r1",
+      "top": -503.39,
+      "left": -281.96,
+      "attrs": { "value": "1000" }
+    },
+    {
+      "type": "wokwi-resistor",
+      "id": "r2",
+      "top": -464.74,
+      "left": -277.89,
+      "attrs": { "value": "1000" }
+    },
+    {
+      "type": "wokwi-resistor",
+      "id": "r4",
+      "top": -426.65,
+      "left": -275.04,
+      "attrs": { "value": "1000" }
+    },
+    {
+      "type": "wokwi-ds1307",
+      "id": "rtc1",
+      "top": -233.68,
+      "left": 109.54,
+      "rotate": 90,
+      "attrs": {}
+    },
+    {
+      "type": "wokwi-ks2e-m-dc5",
+      "id": "relay1",
+      "top": -502.27,
+      "left": 276.2,
+      "rotate": 90,
+      "attrs": {}
+    },
+    {
+      "type": "wokwi-led",
+      "id": "led1",
+      "top": -544.59,
+      "left": 246.19,
+      "attrs": { "color": "red" }
+    },
+    {
+      "type": "wokwi-photoresistor-sensor",
+      "id": "ldr1",
+      "top": -705.86,
+      "left": -166.5,
+      "rotate": 90,
+      "attrs": {}
+    },
+    {
+      "type": "wokwi-pushbutton",
+      "id": "btn4",
+      "top": -590.68,
+      "left": 179.1,
+      "rotate": 180,
+      "attrs": { "color": "grey" }
+    },
+    {
+      "type": "wokwi-resistor",
+      "id": "r5",
+      "top": -482.31,
+      "left": 186.66,
+      "rotate": 90,
+      "attrs": { "value": "1000" }
+    },
+    {
+      "type": "wokwi-pushbutton",
+      "id": "btn5",
+      "top": -117.05,
+      "left": -216.01,
+      "attrs": { "color": "black" }
+    },
+    {
+      "type": "wokwi-resistor",
+      "id": "r6",
+      "top": -534.01,
+      "left": -284.05,
+      "attrs": { "value": "1000" }
+    }
+  ],
+  "connections": [
+    [ "esp:TX0", "$serialMonitor:RX", "", [] ],
+    [ "esp:RX0", "$serialMonitor:TX", "", [] ],
+    [ "dht1:GND", "esp:GND.1", "black", [ "v0" ] ],
+    [ "dht1:VCC", "esp:3V3", "red", [ "v0" ] ],
+    [ "dht1:SDA", "esp:D15", "green", [ "v0" ] ],
+    [ "led3:A", "r3:1", "red", [ "v0" ] ],
+    [ "led3:C", "esp:GND.2", "black", [ "v0" ] ],
+    [ "lcd1:GND", "esp:GND.1", "black", [ "h-13.74", "v-63.34" ] ],
+    [ "bz1:1", "esp:GND.2", "black", [ "v112.86", "h172.58" ] ],
+    [ "pir1:VCC", "esp:VIN", "red", [ "v29.96", "h68.03", "v-288.16" ] ],
+    [ "pir1:GND", "esp:GND.2", "black", [ "v12.95", "h53.43", "v-280.65" ] ],
+    [ "pir1:OUT", "esp:D13", "green", [ "v20.24", "h69.23", "v-309.43", "h10.3" ] ],
+    [ "bz1:2", "esp:D25", "green", [ "v50.06", "h182.57" ] ],
+    [ "r3:2", "esp:D33", "green", [ "h0.69", "v48.25" ] ],
+    [ "r4:1", "btn1:2.l", "green", [ "v135.2", "h55.98" ] ],
+    [ "r2:1", "btn2:2.l", "green", [ "v0" ] ],
+    [ "r1:1", "btn3:2.l", "green", [ "v0" ] ],
+    [ "btn1:1.l", "esp:VIN", "red", [ "h-7.57", "v5.68" ] ],
+    [ "r4:2", "esp:GND.2", "black", [ "v0" ] ],
+    [ "r2:2", "esp:GND.2", "black", [ "v0" ] ],
+    [ "r1:2", "esp:GND.2", "black", [ "v0" ] ],
+    [ "relay1:COIL1", "led1:C", "green", [ "v19.49", "h87.64" ] ],
+    [ "relay1:NO1", "led1:A", "black", [ "v13.21", "h143" ] ],
+    [ "relay1:P1", "esp:3V3", "red", [ "v17.92", "h8.29", "v90.56" ] ],
+    [ "ldr1:AO", "esp:D35", "blue", [ "h1.03", "v116.76" ] ],
+    [ "rtc1:5V", "esp:3V3", "red", [ "h-0.4", "v-143.82" ] ],
+    [ "rtc1:SDA", "esp:D21", "green", [ "v0" ] ],
+    [ "rtc1:SCL", "esp:D22", "blue", [ "v0" ] ],
+    [ "rtc1:GND", "lcd1:GND", "black", [ "v0" ] ],
+    [ "rtc1:5V", "lcd1:VCC", "red", [ "v0" ] ],
+    [ "lcd1:SDA", "rtc1:SDA", "green", [ "h0" ] ],
+    [ "lcd1:SCL", "rtc1:SCL", "green", [ "h0" ] ],
+    [ "relay1:COIL2", "esp:D2", "blue", [ "v58.78", "h-184.71" ] ],
+    [ "relay1:COIL1", "esp:GND.1", "black", [ "v73.4", "h-157.11" ] ],
+    [ "ldr1:GND", "led3:C", "black", [ "v0" ] ],
+    [ "ldr1:VCC", "led3:A", "red", [ "v6.17", "h44.99" ] ],
+    [ "btn4:2.l", "r5:1", "green", [ "h5.03", "v73.37" ] ],
+    [ "r5:2", "esp:3V3", "black", [ "v65.67", "h-80.47" ] ],
+    [ "btn1:2.r", "esp:D26", "purple", [ "v-156.8", "h193.3" ] ],
+    [ "btn3:2.r", "esp:D14", "blue", [ "h32.52", "v-261" ] ],
+    [ "btn5:2.r", "esp:D12", "green", [ "h56.01", "v-318.05" ] ],
+    [ "r6:2", "esp:GND.2", "black", [ "v0" ] ],
+    [ "btn5:2.l", "r6:1", "green", [ "h0" ] ],
+    [ "btn2:2.r", "esp:D27", "green", [ "h14.98", "v-215.88" ] ],
+    [ "btn2:1.l", "btn1:1.l", "red", [ "h0" ] ],
+    [ "btn3:1.l", "btn2:1.l", "red", [ "h0" ] ],
+    [ "btn5:1.l", "btn3:1.l", "red", [ "h2.66", "v-60.31" ] ],
+    [ "btn4:2.r", "esp:D22", "green", [ "h0" ] ]
+  ]
+}
