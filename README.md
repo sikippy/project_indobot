@@ -12,7 +12,7 @@ Herni Bunga     : https://thingsboard.cloud/deviceGroups/e38b8c10-54c4-11ed-8ab1
 Laras Istiqomah : Slide dan Presentasi https://docs.google.com/presentation/d/1nJLA6wzpvZaa4lZ03OP1LcB2QiDQK0eB/edit?usp=sharing&ouid=116947196870439495696&rtpof=true&sd=true <br/>
 Vina P.         : https://wokwi.com/projects/346501431045390930 <br/>https://wokwi.com/projects/346768870801932883
                   
-
+Link simulasi project : https://drive.google.com/file/d/1wb_qxXyHZjMeks2jBMTrhCZh4OMHK7HQ/view?usp=share_link
 Pengetahuan tentang anggrek <br/>
 
 1. pilih media tanam yang cocok <br/>
