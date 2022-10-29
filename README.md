@@ -7,7 +7,7 @@ https://wokwi.com/projects/346563201721172563<br/><br/>
 Kontribusi :
 Ayu Roshida     : https://wokwi.com/projects/341152728173511250 <br/>
 Diana Catur     : https://wokwi.com/projects/346550144303366738 <br/>
-Dwi Mayasari    : prototipe <br/>
+Dwi Mayasari    : prototipe, link : https://www.youtube.com/watch?v=poaPGdw0wcl <br/>
 Herni Bunga     : https://thingsboard.cloud/deviceGroups/e38b8c10-54c4-11ed-8ab1-ebe8b1422014 <br/>
 Laras Istiqomah : Slide dan Presentasi https://docs.google.com/presentation/d/1nJLA6wzpvZaa4lZ03OP1LcB2QiDQK0eB/edit?usp=sharing&ouid=116947196870439495696&rtpof=true&sd=true <br/>
 Vina P.         : https://wokwi.com/projects/346501431045390930 <br/>https://wokwi.com/projects/346768870801932883
