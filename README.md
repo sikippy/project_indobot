@@ -12,7 +12,7 @@ Herni Bunga     : https://thingsboard.cloud/deviceGroups/e38b8c10-54c4-11ed-8ab1
 Laras Istiqomah : Slide dan Presentasi https://docs.google.com/presentation/d/1nJLA6wzpvZaa4lZ03OP1LcB2QiDQK0eB/edit?usp=sharing&ouid=116947196870439495696&rtpof=true&sd=true <br/>
 Vina P.         : https://wokwi.com/projects/346501431045390930 <br/>https://wokwi.com/projects/346768870801932883
                   
-Link simulasi project : https://drive.google.com/file/d/1wb_qxXyHZjMeks2jBMTrhCZh4OMHK7HQ/view?usp=share_link
+Link simulasi project : https://drive.google.com/file/d/1wb_qxXyHZjMeks2jBMTrhCZh4OMHK7HQ/view?usp=share_link  <br/>
 Pengetahuan tentang anggrek <br/>
 
 1. pilih media tanam yang cocok <br/>
@@ -21,10 +21,11 @@ Pengetahuan tentang anggrek <br/>
 4. penyiraman di suhu ruangan. <br/>
 5. siram selama 15 detik <br/>
 6. jangan siram lebih 1 x dari seminggu<br/> 
-7. butuh suhu 10-30 derajat celcius <br/>
-8. pemupukan 2 kali seminggu <br/>
-9. air tidak boleh terlalu panas atau dingin, perlu diukur juga suhu airnya <br/>
-
+7. Threshold suhu 10-30 derajat celcius <br/>
+8. Threshold humidity 67 <br>
+9. Threshold photo resistor 6000 lux, 50-60% daylight. <br/>
+10. pemupukan 2 kali seminggu <br/>
+11. air tidak boleh terlalu panas atau dingin, perlu diukur juga suhu airnya <br/>
 
 https://www.sehatq.com/review/cara-merawat-anggrek-agar-tumbuh-subur-dan-berbunga <br/>
 https://www.kompas.com/homey/read/2021/10/14/205500676/12-kesalahan-dalam-merawat-anggrek-yang-harus-dihindari?page=all <br/>
