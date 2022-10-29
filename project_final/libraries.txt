@@ -1,0 +1,11 @@
+# Wokwi Library List
+# See https://docs.wokwi.com/guides/libraries
+
+DHT sensor library for ESPx
+PubSubClient
+ArduinoJson
+LiquidCrystal I2C
+RTClib
+Relay
+WiFi
+ThingsBoard
