@@ -34,7 +34,7 @@ Teknikal proses: <br/>
 
 Sensor input yang digunakan : <br/>
 1. LDR untuk membantu mengukur cahaya yang diperlukan anggrek, perlu melihat warna daun, jika ada camera dan bisa mengirimkan foto, maka akan mampu     mengirimkan notifikasi bahwa tanaman anggrek butuh lebih banyak cahaya. <br/>
-2. DHT22 untuk mengukur temperatur dan suhu. <br/>
+2. DHT22 untuk mengukur temperatur dan kelembaban. <br/>
 3. PIR untuk mendeteksi pergerakan objek, sehingga dapat menghentikan penyiraman. <br/>
 4. Push button untuk manual jika terjadi kesalahan pada pengoperasian otomatis. <br/>
 
