@@ -170,24 +170,24 @@ void loop()
 
   float lux = getIntCahaya();
   // Reconnect to WiFi, if needed
-  // if (WiFi.status() != WL_CONNECTED) {
-  //   reconnect();
-  //   return;
-  // }
+  if (WiFi.status() != WL_CONNECTED) {
+    reconnect();
+    return;
+  }
 
-  // // Reconnect to ThingsBoard, if needed
-  // if (!tb.connected()) {
-  //   subscribed = false;
-  //   // Connect to the ThingsBoard
-  //   Serial.print("Connecting to: ");
-  //   Serial.println(THINGSBOARD_MQTT_SERVER);
-  //   Serial.print(" with access token ");
-  //   Serial.println(THINGSBOARD_MQTT_ACESSTOKEN);
-  //   if (!tb.connect(THINGSBOARD_MQTT_SERVER, THINGSBOARD_MQTT_ACESSTOKEN)) {
-  //     Serial.println("Failed to connect");
-  //     return;
-  //   }
-  // }
+  // Reconnect to ThingsBoard, if needed
+  if (!tb.connected()) {
+    subscribed = false;
+    // Connect to the ThingsBoard
+    Serial.print("Connecting to: ");
+    Serial.println(THINGSBOARD_MQTT_SERVER);
+    Serial.print(" with access token ");
+    Serial.println(THINGSBOARD_MQTT_ACESSTOKEN);
+    if (!tb.connect(THINGSBOARD_MQTT_SERVER, THINGSBOARD_MQTT_ACESSTOKEN)) {
+      Serial.println("Failed to connect");
+      return;
+    }
+  }
 
   pirState = 0;
   if (digitalRead(RELAY_PIN) == 1) {
@@ -296,8 +296,8 @@ void InitWiFi()
 void setup()
 {
   Serial.begin(SERIAL_DEBUG_BAUD);
-  // WiFi.begin(WIFI_AP_NAME, WIFI_PASSWORD);
-  // InitWiFi();
+  WiFi.begin(WIFI_AP_NAME, WIFI_PASSWORD);
+  InitWiFi();
   if (! rtc.begin())
   {
     Serial.println("RTC TIDAK TERBACA");
